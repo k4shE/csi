@@ -42,7 +42,7 @@ spec:
                 enabled: true
                 setNodeId: true
                 config: |
-                  cluster_name = "vault-integrated-storage"
+                  cluster_name = "vault-csi-integrated-storage"
                   ui = true
                   listener "tcp" {
                     tls_disable = "true"
@@ -52,10 +52,13 @@ spec:
                   storage "raft" {
                     path = "/vault/data"
                     retry_join {
-                      leader_api_addr = "http://vault-csi-0.argo-vault-csi-internal:8200"
+                      leader_api_addr = "http://vault-csi-0.vault-csi-internal:8200"
                     }
                     retry_join {
-                      leader_api_addr = "http://vault-csi-1.argo-vault-csi-internal:8200"
+                      leader_api_addr = "http://vault-csi-1.vault-csi-internal:8200"
+                    }
+                    retry_join {
+                      leader_api_addr = "http://vault-csi-2.vault-csi-internal:8200"
                     }
                   }
 
