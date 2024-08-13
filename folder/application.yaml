@@ -1,8 +1,8 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
-metadata: 
+metadata:
   name: vault-csi-app
-  namespace: vault
+  namespace: default
 spec:
   project: default
   destination:
@@ -23,18 +23,19 @@ spec:
             tlsDisable: true
           injector:
             enabled: false
+
           csi:
             enabled: true
-          
+
           server:
             image:
               repository: "hashicorp/vault"
               tag: "latest"
             standalone:
               enabled: false
+            affinity: ""
             dataStorage:
               storageClass: local-storage
-            affinity: ""
             ha:
               enabled: true
               replicas: 3
@@ -61,14 +62,15 @@ spec:
                       leader_api_addr = "http://vault-csi-2.vault-csi-internal:8200"
                     }
                   }
-
                   disable_mlock = true
                   service_registration "kubernetes" {}
+          # Vault UI
           ui:
             enabled: true
             serviceType: "LoadBalancer"
             serviceNodePort: null
             externalPort: 80
+
     - repoURL: 'https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts'
       chart: secrets-store-csi-driver
       targetRevision: 1.4.4
@@ -78,4 +80,6 @@ spec:
             enabled: true
           enableSecretRotation: true
           rotationPollInterval: 2m
-    - repoURL: 'https://github.com/k4shE/pv.git'
+    - repoURL: 'https://github.com/k4shE/csi.git'
+      path: folder/dev
+      targetRevision: HEAD
