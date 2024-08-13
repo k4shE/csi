@@ -1,8 +1,8 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
-metadata: 
-  name: vault-csi-app
-  namespace: vault
+metadata:
+  name: argo-vault-csi-app
+  namespace: argocd
 spec:
   project: default
   destination:
@@ -16,33 +16,34 @@ spec:
       targetRevision: 0.28.1
       chart: vault
       helm:
-        releaseName: vault-csi
+        releaseName: argo-vault-csi
         values: |
           global:
             enabled: true
-            tlsDisable: false
+            tlsDisable: true
           injector:
             enabled: false
+
           csi:
             enabled: true
-          
+
           server:
             image:
               repository: "hashicorp/vault"
               tag: "latest"
             standalone:
               enabled: false
-            dataStorage:
-              storageClass: local-storage
             affinity: ""
+            dataStorage:
+              storageClass: standard
             ha:
               enabled: true
-              replicas: 3
+              replicas: 2
               raft:
                 enabled: true
                 setNodeId: true
                 config: |
-                  cluster_name = "vault-integrated-storage"
+                  cluster_name = "vault-csi-integrated-storage"
                   ui = true
                   listener "tcp" {
                     tls_disable = "true"
@@ -52,15 +53,21 @@ spec:
                   storage "raft" {
                     path = "/vault/data"
                     retry_join {
-                      leader_api_addr = "http://vault-csi-0.argo-vault-csi-internal:8200"
+                      leader_api_addr = "http://argo-vault-csi-0.argo-vault-csi-internal:8200"
                     }
                     retry_join {
-                      leader_api_addr = "http://vault-csi-1.argo-vault-csi-internal:8200"
+                      leader_api_addr = "http://argo-vault-csi-1.argo-vault-csi-internal:8200"
                     }
                   }
-
                   disable_mlock = true
                   service_registration "kubernetes" {}
+          # Vault UI
+          ui:
+            enabled: true
+            serviceType: "ClusterIP"
+            serviceNodePort: null
+            externalPort: 80
+
     - repoURL: 'https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts'
       chart: secrets-store-csi-driver
       targetRevision: 1.4.4
