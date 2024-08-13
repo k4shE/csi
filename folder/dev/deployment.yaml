@@ -1,0 +1,48 @@
+global:
+            enabled: true
+            tlsDisable: false
+          injector:
+            enabled: false
+          csi:
+            enabled: true
+          
+          server:
+            image:
+              repository: "hashicorp/vault"
+              tag: "latest"
+            standalone:
+              enabled: false
+            dataStorage:
+              storageClass: local-storage
+            affinity: ""
+            ha:
+              enabled: true
+              replicas: 3
+              raft:
+                enabled: true
+                setNodeId: true
+                config: |
+                  cluster_name = "vault-integrated-storage"
+                  ui = true
+                  listener "tcp" {
+                    tls_disable = "true"
+                    address = "[::]:8200"
+                    cluster_address = "[::]:8201"
+                  }
+                  storage "raft" {
+                    path = "/vault/data"
+                    retry_join {
+                      leader_api_addr = "http://vault-csi-0.argo-vault-csi-internal:8200"
+                    }
+                    retry_join {
+                      leader_api_addr = "http://vault-csi-1.argo-vault-csi-internal:8200"
+                    }
+                  }
+
+                  disable_mlock = true
+                  service_registration "kubernetes" {}
+          ui:
+            enabled: true
+            serviceType: "ClusterIP"
+            serviceNodePort: null
+            externalPort: 80
