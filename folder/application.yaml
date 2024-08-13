@@ -1,8 +1,8 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: vault-csi-app
-  namespace: argocd
+  name: vault-app
+  namespace: vault
 spec:
   project: default
   destination:
@@ -16,7 +16,7 @@ spec:
       targetRevision: 0.28.1
       chart: vault
       helm:
-        releaseName: vault-csi
+        releaseName: vault
         values: |
           global:
             enabled: true
@@ -43,7 +43,7 @@ spec:
                 enabled: true
                 setNodeId: true
                 config: |
-                  cluster_name = "vault-csi-integrated-storage"
+                  cluster_name = "vault-integrated-storage"
                   ui = true
                   listener "tcp" {
                     tls_disable = "true"
@@ -53,13 +53,13 @@ spec:
                   storage "raft" {
                     path = "/vault/data"
                     retry_join {
-                      leader_api_addr = "http://vault-csi-0.vault-csi-internal:8200"
+                      leader_api_addr = "http://vault-0.vault-internal:8200"
                     }
                     retry_join {
-                      leader_api_addr = "http://vault-csi-1.vault-csi-internal:8200"
+                      leader_api_addr = "http://vault-1.vault-internal:8200"
                     }
                     retry_join {
-                      leader_api_addr = "http://vault-csi-2.vault-csi-internal:8200"
+                      leader_api_addr = "http://vault-2.vault-internal:8200"
                     }
                   }
                   disable_mlock = true
