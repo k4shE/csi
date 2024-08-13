@@ -25,12 +25,6 @@ spec:
             - name: regcred
           injector:
             enabled: false
-     #   image:
-     #     repository: "registry.connect.redhat.com/hashicorp/vault-k8s"
-     #     tag: "latest"
-     #   agentImage:
-     #     repository: "registry.connect.redhat.com/hashicorp/vault"
-     #     tag: "latest"
           server:
             image:
               repository: "registry.connect.redhat.com/hashicorp/vault"
