@@ -63,7 +63,7 @@ spec:
                   service_registration "kubernetes" {}
           ui:
             enabled: true
-            serviceType: "ClusterIP"
+            serviceType: "LoadBalancer"
             serviceNodePort: null
             externalPort: 80
     - repoURL: 'https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts'
