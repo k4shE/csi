@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: default-pv-01
+  name: local-pv-01
 spec:
   capacity:
     storage: 10Gi 
@@ -9,16 +9,16 @@ spec:
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: default-storage
+  storageClassName: local-storage
   hostPath:
-    path: /mnt/default-pv-data
+    path: /mnt/pv-data
 
 ---
 
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: default-pv-02
+  name: local-pv-02
 spec:
   capacity:
     storage: 10Gi
@@ -26,16 +26,16 @@ spec:
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: default-storage
+  storageClassName: local-storage
   hostPath:
-    path: /mnt/default-pv-data
+    path: /mnt/pv-data
 
 ---
 
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: default-pv-03
+  name: local-pv-03
 spec:
   capacity:
     storage: 10Gi
@@ -43,6 +43,6 @@ spec:
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: default-storage
+  storageClassName: local-storage
   hostPath:
-    path: /mnt/default-pv-data
+    path: /mnt/pv-data
