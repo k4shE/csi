@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: vault-csi-app
-  namespace: default
+  namespace: vault
 spec:
   project: default
   destination:
