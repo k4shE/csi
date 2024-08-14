@@ -23,11 +23,12 @@ spec:
             tlsDisable: true
           injector:
             enabled: false
-
           csi:
             enabled: true
-
           server:
+            image:
+              repository: "hashicorp/vault"
+              tag: "latest"
             standalone:
               enabled: false
             affinity: ""
