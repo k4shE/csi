@@ -1,8 +1,8 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: vault-app
-  namespace: argocd
+  name: vault-csi-app
+  namespace: default
 spec:
   project: default
   destination:
@@ -16,11 +16,11 @@ spec:
       targetRevision: 0.28.1
       chart: vault
       helm:
-        releaseName: vault
+        releaseName: vault-csi
         values: |
           global:
             enabled: true
-            tlsDisable: true
+            tlsDisable: false
           injector:
             enabled: false
 
@@ -31,6 +31,19 @@ spec:
             image:
               repository: "hashicorp/vault"
               tag: "latest"
+            extraEnvironmentVars:
+              VAULT_CACERT: /vault/userconfig/vault-ha-tls/vault.ca
+              VAULT_TLSCERT: /vault/userconfig/vault-ha-tls/vault.crt
+              VAULT_TLSKEY: /vault/userconfig/vault-ha-tls/vault.key
+            volumes:
+              - name: userconfig-vault-ha-tls
+                secret:
+                defaultMode: 420
+                secretName: vault-ha-tls
+            volumeMounts:
+              - mountPath: /vault/userconfig/vault-ha-tls
+                name: userconfig-vault-ha-tls
+                readOnly: true
             standalone:
               enabled: false
             affinity: ""
@@ -64,6 +77,11 @@ spec:
                   }
                   disable_mlock = true
                   service_registration "kubernetes" {}
+          ui:
+            enabled: true
+            serviceType: "LoadBalancer"
+            serviceNodePort: null
+            externalPort: 80
 
     - repoURL: 'https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts'
       chart: secrets-store-csi-driver
