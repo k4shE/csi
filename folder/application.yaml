@@ -16,7 +16,7 @@ spec:
       targetRevision: 0.28.1
       chart: vault
       helm:
-        releaseName: vault-csi
+        releaseName: vault
         values: |
           global:
             enabled: true
